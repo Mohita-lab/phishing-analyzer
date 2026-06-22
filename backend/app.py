@@ -16,7 +16,7 @@ app = Flask(__name__)
 
 # Allow requests from Netlify frontend only
 CORS(app, origins=[
-    'https://jocular-dragon-04a7c0.netlify.app',
+    'https://gilded-trifle-133800.netlify.app/',
     'http://localhost:5000',
     'http://127.0.0.1:5000'
 ])
@@ -24,12 +24,13 @@ CORS(app, origins=[
 analyzer = SimplePhishingAnalyzer()
 
 
-@app.route('/')
-def home():
+# ── Health check ─────────────────────────────────────────────────
+@app.route('/health', methods=['GET'])
+def health_check():
     return jsonify({
-        "service": "Phishing Email Analyzer API",
-        "status": "running"
-    })
+        'status':  'healthy',
+        'service': 'Phishing Email Analyzer API'
+    }), 200
 
 
 # ── Analyze endpoint ─────────────────────────────────────────────
