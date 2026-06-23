@@ -1,6 +1,27 @@
+# Web framework
 Flask==3.0.0
 Flask-CORS==4.0.0
+Flask-SQLAlchemy==3.1.1
+Flask-HTTPAuth==4.8.0
+Flask-Limiter==3.5.0
 Werkzeug==3.0.1
+
+# Environment & config
+python-dotenv==1.0.0
+
+# Production server (required on Render)
+gunicorn==21.2.0
+
+# Data & ML
+# FIX: numpy 2.5.0 is incompatible with scikit-learn 1.4.0 — downgraded to 1.26.4
+numpy
+pandas
+scikit-learn
+python-dateutil
+
+# Scheduling
+APScheduler==3.10.4
+
+# Testing
 pytest==7.4.3
 pytest-cov==4.1.0
-gunicorn==23.0.0
