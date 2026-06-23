@@ -289,6 +289,11 @@ def _start_scheduler():
         logger.warning(f"Scheduler could not start: {e}. Anomaly retraining disabled.")
         return None
 
+@app.route('/dbinfo')
+def dbinfo():
+    return jsonify({
+        "database_uri": app.config['SQLALCHEMY_DATABASE_URI']
+    })
 
 with app.app_context():
     db.create_all()
