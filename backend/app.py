@@ -240,6 +240,26 @@ def acknowledge_alert(alert_id: int):
     db.session.commit()
     return jsonify({'success': True})
 
+@app.route('/reports', methods=['GET'])
+@require_auth
+def get_reports():
+
+    reports = PhishingReport.query.all()
+
+    return jsonify({
+        "count": len(reports),
+        "reports": [
+            {
+                "report_id": r.report_id,
+                "sender": r.sender,
+                "subject": r.subject,
+                "risk_score": r.risk_score,
+                "risk_level": r.risk_level,
+                "status": r.status
+            }
+            for r in reports
+        ]
+    })
 
 @app.route('/health', methods=['GET'])
 def health():
