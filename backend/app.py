@@ -225,8 +225,13 @@ def analytics_overview():
     days = int(request.args.get("days", 30))
     from sqlalchemy import func
 
-    total = db.session.query(func.count(EmailAnalysis.id)).scalar() or 0
-    phishing   = EmailAnalysis.query.filter_by(is_phishing=True).count()
+    total = db.session.query(func.count(EmailAnalysis.id)).filter(
+    EmailAnalysis.timestamp >= cutoff
+    ).scalar() or 0
+    phishing = EmailAnalysis.query.filter(
+        EmailAnalysis.is_phishing == True,
+        EmailAnalysis.timestamp >= cutoff
+    ).count()
     safe       = total - phishing
     avg_score  = float(db.session.query(db.func.avg(EmailAnalysis.risk_score)).scalar() or 0)
     
@@ -243,9 +248,12 @@ def analytics_overview():
 @require_auth
 def analytics_trends():
     days = int(request.args.get("days", 30))
-    records = EmailAnalysis.query.order_by(EmailAnalysis.timestamp.desc()).limit(days * 10).all()
+    records = EmailAnalysis.query.filter(
+        EmailAnalysis.timestamp >= cutoff
+    ).order_by(EmailAnalysis.timestamp.desc()).all()
     # Group by date
     by_date = {}
+    
     for r in records:
         date = r.timestamp.strftime("%Y-%m-%d")
         if date not in by_date:
