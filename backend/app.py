@@ -266,7 +266,8 @@ def recent_alerts():
 # ─────────────────────────────────────────────
 # INIT DB
 # ─────────────────────────────────────────────
-with app.app_context():
+@app.before_first_request
+def init_db():
     db.create_all()
 
 # ─────────────────────────────────────────────
