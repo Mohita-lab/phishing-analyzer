@@ -228,7 +228,8 @@ def analytics_overview():
     total = db.session.query(func.count(EmailAnalysis.id)).scalar() or 0
     phishing   = EmailAnalysis.query.filter_by(is_phishing=True).count()
     safe       = total - phishing
-    avg_score  = db.session.query(db.func.avg(EmailAnalysis.risk_score)).scalar() or 0
+    avg_score  = float(db.session.query(db.func.avg(EmailAnalysis.risk_score)).scalar() or 0)
+    
     return jsonify({
         "total_analyzed": total,
         "phishing_count": phishing,
