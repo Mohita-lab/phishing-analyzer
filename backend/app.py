@@ -220,15 +220,18 @@ def get_alerts():
 @app.route("/api/analytics/overview")
 @require_auth
 def analytics_overview():
-    return jsonify({
-        "data": {
-            "total_analyses": EmailAnalysis.query.count(),
-            "phishing_count": EmailAnalysis.query.filter_by(is_phishing=True).count(),
-            "phishing_rate": 0,
-            "avg_risk_score": 0,
-            "report_count": PhishingReport.query.count()
-        }
-    })
+    try:
+        return jsonify({
+            "data": {
+                "total_analyses": db.session.execute(db.text("SELECT COUNT(*) FROM email_analysis")).scalar() or 0,
+                "phishing_count": db.session.execute(db.text("SELECT COUNT(*) FROM email_analysis WHERE is_phishing=1")).scalar() or 0,
+                "phishing_rate": 0,
+                "avg_risk_score": 0,
+                "report_count": db.session.execute(db.text("SELECT COUNT(*) FROM phishing_report")).scalar() or 0
+            }
+        })
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 
 @app.route("/api/analytics/trends")
