@@ -28,8 +28,12 @@ if not _allowed_origins:
     logger.warning("ALLOWED_ORIGINS not set — defaulting to localhost only.")
     _allowed_origins = ['http://localhost:3000', 'http://localhost:5000','https://gilded-trifle-133800.netlify.app']
 
-CORS(app, origins=_allowed_origins)
-
+CORS(
+    app,
+    origins=_allowed_origins,
+    allow_headers=["Content-Type", "Authorization"],
+    methods=["GET", "POST", "OPTIONS"]
+)
 # ------------------------------------------------------------------
 # Database
 # ------------------------------------------------------------------
@@ -85,18 +89,25 @@ VALID_TOKENS = _parse_tokens()
 
 
 def require_auth(f):
-    """Decorator: validates Bearer token, sets g.role."""
     @wraps(f)
     def decorated(*args, **kwargs):
+
+        # ✅ ALLOW CORS PRELIGHT
+        if request.method == "OPTIONS":
+            return '', 200
+
         auth_header = request.headers.get('Authorization', '')
         if not auth_header.startswith('Bearer '):
             return jsonify({'error': 'Missing or malformed Authorization header'}), 401
+
         token = auth_header[len('Bearer '):]
         role  = VALID_TOKENS.get(token)
         if role is None:
             return jsonify({'error': 'Invalid API token'}), 401
+
         g.role = role
         return f(*args, **kwargs)
+
     return decorated
 
 
@@ -289,11 +300,6 @@ def _start_scheduler():
         logger.warning(f"Scheduler could not start: {e}. Anomaly retraining disabled.")
         return None
 
-@app.route('/dbinfo')
-def dbinfo():
-    return jsonify({
-        "database_uri": app.config['SQLALCHEMY_DATABASE_URI']
-    })
 
 with app.app_context():
     db.create_all()
