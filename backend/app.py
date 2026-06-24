@@ -3,7 +3,6 @@ import uuid
 import logging
 from datetime import datetime, timezone
 from functools import wraps
-import urllib.request
 
 from flask import Flask, request, jsonify, g
 from flask_cors import CORS
@@ -15,7 +14,6 @@ from models import db, EmailAnalysis, PhishingReport, AnomalyAlert
 from analyzer import SimplePhishingAnalyzer
 from anomaly_detector import AnomalyDetector
 
-
 load_dotenv()
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s: %(message)s")
@@ -26,7 +24,7 @@ app = Flask(__name__)
 # ── CORS ──────────────────────────────────────────────────────────
 origins = [o.strip() for o in os.getenv("ALLOWED_ORIGINS", "").split(",") if o.strip()]
 if not origins:
-    origins = ["http://localhost:3000", "https://gilded-trifle-133800.netlify.app"]
+    origins = ["http://localhost:3000", "https://mohita-lab.github.io/phishing-analyzer/frontend"]
     logger.warning("ALLOWED_ORIGINS not set — using defaults.")
 
 CORS(app, origins=origins, allow_headers=["Content-Type", "Authorization"], methods=["GET", "POST", "OPTIONS"])
@@ -310,15 +308,6 @@ def analytics_recent_alerts():
 @app.errorhandler(404)
 def not_found(e):
     return jsonify({"error": "Route not found"}), 404
-
-def _keep_awake():
-    try:
-        urllib.request.urlopen('https://phishing-axis.onrender.com/health')
-        logger.info("Keep-awake ping sent.")
-    except:
-        pass
-
-scheduler.add_job(_keep_awake, 'interval', minutes=14, id='keep_awake')
 
 
 # ── Startup ───────────────────────────────────────────────────────
