@@ -218,8 +218,8 @@ def analytics_overview():
         "total_analyzed": total,
         "phishing_count": phishing,
         "safe_count":     total - phishing,
-        "avg_risk_score": round(avg_score, 1),
-        "reports_filed":  reports,
+        "avg_risk_score": float(round(avg_score, 1)),
+        "report_count":   reports,          # dashboard reads report_count
         "days":           days,
     })
 
@@ -229,18 +229,25 @@ def analytics_overview():
 def analytics_trends():
     days    = int(request.args.get("days", 30))
     records = EmailAnalysis.query.order_by(EmailAnalysis.timestamp.desc()).limit(days * 10).all()
-    by_date = {}
+
+    analyses_by_date  = {}   # { "2026-06-24": 5 }
+    phishing_by_date  = {}   # { "2026-06-24": 3 }
+    risk_distribution = {"HIGH": 0, "MEDIUM": 0, "LOW": 0, "SAFE": 0}
+
     for r in records:
         date = r.timestamp.strftime("%Y-%m-%d")
-        if date not in by_date:
-            by_date[date] = {"date": date, "total": 0, "phishing": 0, "safe": 0}
-        by_date[date]["total"] += 1
+        analyses_by_date[date] = analyses_by_date.get(date, 0) + 1
         if r.is_phishing:
-            by_date[date]["phishing"] += 1
-        else:
-            by_date[date]["safe"] += 1
-    # Plain array — dashboard calls .forEach() directly
-    return jsonify(sorted(by_date.values(), key=lambda x: x["date"]))
+            phishing_by_date[date] = phishing_by_date.get(date, 0) + 1
+        level = r.risk_level if r.risk_level in risk_distribution else "SAFE"
+        risk_distribution[level] += 1
+
+    # dashboard reads: data.analyses_by_date, data.phishing_by_date, data.risk_distribution
+    return jsonify({
+        "analyses_by_date":  analyses_by_date,
+        "phishing_by_date":  phishing_by_date,
+        "risk_distribution": risk_distribution,
+    })
 
 
 @app.route("/api/analytics/top-senders")
