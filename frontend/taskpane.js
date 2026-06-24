@@ -2,7 +2,7 @@
    taskpane.js — Phishing Analyzer for Outlook
    AXIS IT Security  ·  v1.0
 
-   Frontend: https://gilded-trifle-133800.netlify.app/taskpane.html
+   Frontend: https://github.com/Mohita-lab/phishing-analyzer/blob/main/frontend/taskpane.js
    Backend:  https://phishing-axis.onrender.com
    ================================================================ */
 
