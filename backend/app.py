@@ -323,6 +323,16 @@ with app.app_context():
 if os.environ.get("WERKZEUG_RUN_MAIN") != "false":
     scheduler = BackgroundScheduler(daemon=True)
     scheduler.add_job(lambda: anomaly_detector.retrain(), "interval", minutes=30, id="retrain")
+
+    # Keep Render free tier awake
+    import urllib.request
+    def _keep_awake():
+        try:
+            urllib.request.urlopen("https://phishing-axis.onrender.com/health")
+        except:
+            pass
+    scheduler.add_job(_keep_awake, "interval", minutes=14, id="keep_awake")
+
     scheduler.start()
     logger.info("Scheduler started.")
 
