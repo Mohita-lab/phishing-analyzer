@@ -209,18 +209,25 @@ def acknowledge_alert(alert_id):
 @app.route("/api/analytics/overview")
 @require_auth
 def analytics_overview():
-    days      = int(request.args.get("days", 30))
-    total     = EmailAnalysis.query.count()
-    phishing  = EmailAnalysis.query.filter_by(is_phishing=True).count()
-    avg_score = db.session.query(db.func.avg(EmailAnalysis.risk_score)).scalar() or 0
-    reports   = PhishingReport.query.count()
+
+    days = int(request.args.get("days", 30))
+
+    total = EmailAnalysis.query.count()
+    phishing = EmailAnalysis.query.filter_by(is_phishing=True).count()
+
+    avg_score = db.session.query(func.avg(EmailAnalysis.risk_score)).scalar() or 0
+    reports = PhishingReport.query.count()
+
+    phishing_rate = round((phishing / total) * 100, 1) if total else 0
+
     return jsonify({
         "total_analyzed": total,
         "phishing_count": phishing,
-        "safe_count":     total - phishing,
+        "safe_count": total - phishing,
+        "phishing_rate": phishing_rate,   # ✅ THIS FIXES YOUR DASHBOARD
         "avg_risk_score": float(round(avg_score, 1)),
-        "report_count":   reports,          # dashboard reads report_count
-        "days":           days,
+        "report_count": reports,
+        "days": days,
     })
 
 
