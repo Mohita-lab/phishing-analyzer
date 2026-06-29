@@ -128,7 +128,7 @@ async function callAPI(url, payload) {
 }
 
 // ────────────────────────────────────────────────────────────────
-// REPORT (ALWAYS AVAILABLE NOW)
+// REPORT (ALWAYS AVAILABLE)
 // ────────────────────────────────────────────────────────────────
 async function reportPhishing() {
     try {
@@ -171,7 +171,7 @@ async function reportPhishing() {
 }
 
 // ────────────────────────────────────────────────────────────────
-// UI (UPDATED: REPORT BUTTON ALWAYS SHOWN)
+// UI (REPORT BUTTON ALWAYS SHOWN)
 // ────────────────────────────────────────────────────────────────
 function displayResults(data) {
     hideLoading();
@@ -191,7 +191,7 @@ function displayResults(data) {
         verdict.innerText = "✓ SAFE EMAIL";
     }
 
-    // ✅ ALWAYS SHOW REPORT BUTTON (FIX)
+    // ALWAYS SHOW REPORT BUTTON
     const reportSection = document.getElementById("report-section");
 
     reportSection.classList.remove("hidden");
