@@ -72,6 +72,9 @@ def require_auth(f):
     @wraps(f)
     def decorated(*args, **kwargs):
 
+        if request.method == "OPTIONS":
+            return jsonify({}), 200
+
         header = request.headers.get("Authorization", "")
 
         if not header.startswith("Bearer "):
@@ -277,9 +280,10 @@ def analytics_top_senders():
 
     rows = (
         db.session.query(
-            func.count(EmailAnalysis.id).label("email_count"),
-            func.sum(EmailAnalysis.risk_score).label("total_score"),
-            func.sum(phishing_case).label("phishing_count")
+            EmailAnalysis.sender,
+            func.count(EmailAnalysis.id),
+            func.coalesce(func.sum(EmailAnalysis.risk_score), 0),
+            func.coalesce(func.sum(phishing_case), 0)
         )
         .group_by(EmailAnalysis.sender)
         .order_by(func.count(EmailAnalysis.id).desc())
@@ -290,7 +294,6 @@ def analytics_top_senders():
     result = []
 
     for sender, email_count, total_score, phishing_count in rows:
-
         email_count = email_count or 0
         total_score = total_score or 0
         phishing_count = phishing_count or 0
@@ -307,6 +310,25 @@ def analytics_top_senders():
 
     return jsonify(result)
 
+@app.route("/api/analytics/top-indicators")
+@require_auth
+def analytics_top_indicators():
+
+    records = EmailAnalysis.query.filter_by(is_phishing=True).all()
+
+    counts = {}
+
+    for r in records:
+        for ind in (r.indicators or []):
+            title = ind.get("title", "Unknown")
+            counts[title] = counts.get(title, 0) + 1
+
+    sorted_ind = sorted(counts.items(), key=lambda x: x[1], reverse=True)[:10]
+
+    return jsonify([
+        {"indicator": t, "count": c}
+        for t, c in sorted_ind
+    ])
 
 @app.route("/api/analytics/recent-alerts")
 @require_auth
