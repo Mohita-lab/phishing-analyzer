@@ -144,7 +144,7 @@ async function reportPhishing() {
 
         showLoading('Submitting report…');
 
-        const data = await postToBackend(REPORT_ENDPOINT, {
+        const data = await callAPI(REPORT_ENDPOINT, {
             sender: currentAnalysis.sender,
             subject: currentAnalysis.subject,
             risk_score: currentAnalysis.risk_score,
@@ -154,7 +154,6 @@ async function reportPhishing() {
 
         hideLoading();
 
-        // ✅ SHOW IN UI (THIS IS WHAT YOU ASKED FOR)
         document.getElementById('report-section').innerHTML = `
             <div class="report-success">
                 <h3>✅ Report Sent Successfully</h3>
@@ -172,7 +171,7 @@ async function reportPhishing() {
 
     } catch (err) {
         console.error(err);
-        showError('Failed to submit report');
+        showError(err.message || 'Failed to submit report');
     }
 }
 
