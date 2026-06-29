@@ -12,6 +12,17 @@ const API_ENDPOINT    = `${API_BASE}/analyze`;
 const REPORT_ENDPOINT = `${API_BASE}/report`;
 const API_TOKEN = 'testtoken123';
 
+fetch(`${API_BASE}/api/analytics/top-indicators`, {
+    method: "GET",
+    headers: {
+        "Authorization": "Bearer testtoken123",
+        "Content-Type": "application/json"
+    }
+})
+.then(r => r.json())
+.then(console.log)
+.catch(console.error);
+
 // ── State ────────────────────────────────────────────────────────
 let currentEmailText = '';
 let currentAnalysis  = null;
