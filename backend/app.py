@@ -50,6 +50,19 @@ analyzer = SimplePhishingAnalyzer()
 anomaly_detector = AnomalyDetector(min_samples=int(os.getenv("MIN_SAMPLES", 10)))
 
 # ── Auth ──────────────────────────────────────────────────────────
+@app.route("/")
+def root():
+    return jsonify({
+        "status": "ok",
+        "service": "Phishing Analyzer Backend",
+        "endpoints": [
+            "/health",
+            "/analyze",
+            "/api/analytics/overview",
+            "/api/analytics/trends"
+        ]
+    })
+    
 def _load_tokens():
     raw = os.getenv("API_TOKENS", "").strip()
     if not raw:
