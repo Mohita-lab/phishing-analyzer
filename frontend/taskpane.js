@@ -137,14 +137,14 @@ async function callAPI(url, payload) {
 // ────────────────────────────────────────────────────────────────
 async function reportPhishing() {
     try {
-        if (!currentAnalysis) {
-            showError("No analysis available");
+        if (!currentEmailText || !currentAnalysis) {
+            showError('No email data available. Please analyse first.');
             return;
         }
 
-        showLoading("Submitting report...");
+        showLoading('Submitting report…');
 
-        const res = await callAPI(REPORT_ENDPOINT, {
+        const data = await postToBackend(REPORT_ENDPOINT, {
             sender: currentAnalysis.sender,
             subject: currentAnalysis.subject,
             risk_score: currentAnalysis.risk_score,
@@ -154,18 +154,26 @@ async function reportPhishing() {
 
         hideLoading();
 
-        document.getElementById("report-section").innerHTML = `
-            <h3>✓ Report Submitted</h3>
-            <p>Report ID: ${res.report_id}</p>
+        // ✅ SHOW IN UI (THIS IS WHAT YOU ASKED FOR)
+        document.getElementById('report-section').innerHTML = `
+            <div class="report-success">
+                <h3>✅ Report Sent Successfully</h3>
+                <p>Email has been forwarded to security system.</p>
+                <p><b>Report ID:</b> ${data.report_id}</p>
+
+                <button id="new-analysis-btn" class="analyze-button">
+                    Analyse Another Email
+                </button>
+            </div>
         `;
 
-    } catch (err) {
-        showError(err.message);
-    }
-}
+        document.getElementById('new-analysis-btn')
+            .addEventListener('click', resetAnalysis);
 
-function cancelReport() {
-    document.getElementById("report-section").classList.add("hidden");
+    } catch (err) {
+        console.error(err);
+        showError('Failed to submit report');
+    }
 }
 
 // ────────────────────────────────────────────────────────────────
