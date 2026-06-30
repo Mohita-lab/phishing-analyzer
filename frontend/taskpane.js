@@ -75,43 +75,21 @@ async function analyzeTestEmail() {
         showLoading("Testing sample email...");
 
         currentEmailText = `
-From: Kinsley Hennequin 
-Sent: Thursday, 11 June 2026 11:29
-To: AXIS Group <AxisGroup@axis.mu>
-Cc: IT Team <itteam@blc.mu>
-Subject: Mandatory Windows Security Update – Immediate Action Required
-Importance: High
+From: security@micr0soft-login.com
+To: employee@axis.mu
+Subject: URGENT: Verify Your Microsoft Account
 
-Dear All,
+Dear User,
 
-I hope this email finds you well.
+We detected unusual sign-in activity on your Microsoft account.
 
-We wish to bring to your immediate attention that Microsoft has identified critical vulnerabilities in the Windows operating system and has released an urgent security update to address these issues.
+To protect your account, please verify your identity immediately using the link below.
 
-In order to safeguard our organisation's systems, data, and network infrastructure, this update is MANDATORY for all staff members. You are required to apply the update at the earliest opportunity.
+http://login-microsoft-secureverify.xyz
 
-Please follow the steps below to install the update:
+Failure to complete verification within 24 hours will result in permanent account suspension.
 
-1. Click on the Start Menu and go to Settings
-2. Navigate to Windows Update
-3. Click Check for Updates and install all available updates
-4. Restart your computer once the installation is complete
-
-Attached is a step-by-step guide for your reference.
-
-If you encounter any issues during the update process or require assistance, please do not hesitate to contact the IT Support team immediately.
-
-Kind regards,
-
-Kinsley.
-
-
-Kinsley Hennequin
-Junior IT Administrator
-
- 2nd Floor, The AXIS, 26 Bank Street, Cybercity, Ebene 72201, Mauritius
-  (+230) 403 2500 |   (+230) 5853 9774 |    (+230) 403 2501 |   www.axis.mu 
-
+Microsoft Security Team
 `;
 
         const result = await callAPI(API_ENDPOINT, {
