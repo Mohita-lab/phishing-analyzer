@@ -74,15 +74,45 @@ async function analyzeTestEmail() {
     try {
         showLoading("Testing sample email...");
 
-        currentEmailText = `From: security@micr0soft-login.com
-Sent: Wednesday, June 25, 2026
-To: staff@axis.mu
-Subject: Urgent Account Verification
+        currentEmailText = `
+From: Kinsley Hennequin 
+Sent: Thursday, 11 June 2026 11:29
+To: AXIS Group <AxisGroup@axis.mu>
+Cc: IT Team <itteam@blc.mu>
+Subject: Mandatory Windows Security Update – Immediate Action Required
 Importance: High
 
-Dear Customer, your account will be suspended immediately.
-Verify your password and credit card now at http://192.168.1.1/login
-or your account will expire today.`;
+Dear All,
+
+I hope this email finds you well.
+
+We wish to bring to your immediate attention that Microsoft has identified critical vulnerabilities in the Windows operating system and has released an urgent security update to address these issues.
+
+In order to safeguard our organisation's systems, data, and network infrastructure, this update is MANDATORY for all staff members. You are required to apply the update at the earliest opportunity.
+
+Please follow the steps below to install the update:
+
+1. Click on the Start Menu and go to Settings
+2. Navigate to Windows Update
+3. Click Check for Updates and install all available updates
+4. Restart your computer once the installation is complete
+
+Attached is a step-by-step guide for your reference.
+
+If you encounter any issues during the update process or require assistance, please do not hesitate to contact the IT Support team immediately.
+
+Kind regards,
+
+Kinsley.
+
+
+Kinsley Hennequin
+Junior IT Administrator
+
+ 2nd Floor, The AXIS, 26 Bank Street, Cybercity, Ebene 72201, Mauritius
+  (+230) 403 2500 |   (+230) 5853 9774 |    (+230) 403 2501 |   www.axis.mu 
+
+`;
 
         const result = await callAPI(API_ENDPOINT, {
             email_text:  currentEmailText,
